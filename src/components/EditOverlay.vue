@@ -1,11 +1,15 @@
 <template>
-  <div id="editBackdrop" @click="close()" v-if="isOpen">
-    <div id="editOverlay" @click="$event.stopPropagation()">
-      <template v-if="person">
-        <input type="text" :value="person.name" @change="$emit('namechanged', $event.target.value)" placeholder="Name">
+  <div id="editBackdrop" @click="close()" :class="{closed: !isOpen}">
+    <div id="editOverlay" @click="$event.stopPropagation()" @keyup.enter="close()" @keyup.esc="close()" v-if="person">
+        <input type="text" :value="person.name" @change="$emit('namechanged', $event.target.value)" placeholder="Name" ref="nameinput">
+        <br>
         <input type="text" :value="person.country" @change="$emit('countrychanged', $event.target.value)" placeholder="Land">
-        <input type="file" @change="$emit('imagechanged', $event)">
-      </template>
+        <br>
+        <input type="file" @change="$emit('imagechanged', $event)"> <br>
+      <button @click="close">Close</button>
+      <button @click="$emit('delete')">Delete</button>
+      <br>
+        <img :src="person.image" alt="">
     </div>
   </div>
 </template>
@@ -26,6 +30,7 @@ export default {
   methods: {
     open() {
       this.isOpen = true;
+      window.setTimeout(() => this.$refs.nameinput.focus(), 0);
     },
     close() {
       this.isOpen = false;
@@ -37,7 +42,6 @@ export default {
       this.createImage(item, files[0]);
     },
     createImage(item, file) {
-      var image = new Image();
       var reader = new FileReader();
 
       reader.onload = (e) => {
@@ -62,6 +66,10 @@ export default {
     background: rgba(82, 68, 68, 0.5);
   }
 
+  #editBackdrop.closed {
+    display: none;
+  }
+
   #editOverlay {
     position: fixed;
     top: 2em;
@@ -70,5 +78,13 @@ export default {
     bottom: 2em;
     background: white;
     border-radius: 1em;
+    padding: 2em;
+    z-index: 1;
+  }
+
+  img {
+    max-width: calc(100%);
+    max-height: 500px;
+    margin-top: 3em;
   }
 </style>

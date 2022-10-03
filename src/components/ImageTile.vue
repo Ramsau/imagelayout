@@ -1,8 +1,8 @@
 <template>
-  <div class="tile">
+  <div class="tile" :style="style">
+    <img :src="person.image" alt="">
     {{ person.name }} <br>
     {{ person.country }}
-    <img :src="person.image" alt="">
   </div>
 </template>
 
@@ -13,13 +13,26 @@ export default {
   name: "ImageTile",
   props: {
     person: Person,
+    numTiles: Number
+  },
+  computed: {
+    style() {
+      return {
+        "width": "calc(" + (100 / this.numTiles).toString() + "% - 20px)"
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-  .tile {
-    background-color: #939393;
-    width: 25%;
+
+  .div.tile {
+    z-index: -1;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
   }
 </style>
